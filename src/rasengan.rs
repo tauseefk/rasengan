@@ -19,13 +19,13 @@ impl<T: Copy, const N: usize> Rasengan<T, N> {
         (idx + 1) % self.buf.len()
     }
 
-    fn is_full(&self) -> bool {
+    fn will_overwrite_unread_data(&self) -> bool {
         self.write_ptr + 1 == self.read_ptr + self.buf.len()
     }
 
     // Overwrites when buffer is full
     pub fn write(&mut self, data: T) {
-        if self.is_full() {
+        if self.will_overwrite_unread_data() {
             self.read_ptr += 1;
         }
 
