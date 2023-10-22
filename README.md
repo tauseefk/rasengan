@@ -19,4 +19,4 @@ In this case the reader resumes, so no unread values were overwritten.
 ### Write with overwrites
 In this case the reader is still busy and the writer overwrites unread values. The read pointer is then moved to the least recent values in the buffer.
 
-<img src="https://github.com/tauseefk/rasengan/assets/11029896/52186f31-7e85-46a6-8b4b-cd8fd4b55497" width="400" />
+<img src="https://github.com/tauseefk/rasengan/assets/11029896/52186f31-7e85-46a6-8b4b-cd8fd4b55497" width="540" />
