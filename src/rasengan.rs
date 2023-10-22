@@ -3,7 +3,6 @@ struct Rasengan<T: Copy, const N: usize> {
     buf: [Option<T>; N],
     read_ptr: usize,
     write_ptr: usize,
-    has_no_unread_data: bool,
 }
 
 #[allow(dead_code)]
@@ -11,9 +10,8 @@ impl<T: Copy, const N: usize> Rasengan<T, N> {
     fn new() -> Self {
         Self {
             buf: [None; N],
-            read_ptr: 0,
+            read_ptr: 1,
             write_ptr: 0,
-            has_no_unread_data: true,
         }
     }
 
@@ -21,43 +19,32 @@ impl<T: Copy, const N: usize> Rasengan<T, N> {
         (idx + 1) % self.buf.len()
     }
 
-    // if data at read_ptr was yet to be read, and write_ptr caught up
     fn will_overwrite_unread_data(&self) -> bool {
-        self.has_overlapping_ptrs() && !self.has_no_unread_data
-    }
-
-    fn has_overlapping_ptrs(&self) -> bool {
-        self.read_ptr == self.write_ptr
+        self.write_ptr + 1 == self.read_ptr + self.buf.len()
     }
 
     // Overwrites when buffer is full
     pub fn write(&mut self, data: T) {
         if self.will_overwrite_unread_data() {
-            self.read_ptr = self.wrapping_increment(self.read_ptr);
+            self.read_ptr += 1;
         }
 
-        self.buf[self.write_ptr] = Some(data);
-        self.write_ptr = self.wrapping_increment(self.write_ptr);
-
-        self.has_no_unread_data = false;
+        self.write_ptr += 1;
+        self.buf[self.write_ptr % self.buf.len()] = Some(data);
     }
 
     pub fn read(&mut self) -> T {
-        if self.has_no_unread_data {
-            panic!("Buffer has no unread values left.");
+        // this relies on the fact that read will always lead write
+        if self.write_ptr < self.read_ptr {
+            panic!("No unread data available.");
         }
 
-        let data = self.buf[self.read_ptr];
-        self.read_ptr = self.wrapping_increment(self.read_ptr);
-
-        // read_ptr caught up to write_ptr
-        if self.has_overlapping_ptrs() {
-            self.has_no_unread_data = true;
-        }
+        let data = self.buf[self.read_ptr % self.buf.len()];
+        self.read_ptr += 1;
 
         match data {
             Some(val) => val,
-            None => panic!("Reading None"),
+            None => unimplemented!(),
         }
     }
 }
