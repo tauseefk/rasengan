@@ -3,6 +3,7 @@ struct Rasengan<T: Copy, const N: usize> {
     buf: [Option<T>; N],
     read_ptr: usize,
     write_ptr: usize,
+    has_no_unread_data: bool,
 }
 
 #[allow(dead_code)]
@@ -12,6 +13,7 @@ impl<T: Copy, const N: usize> Rasengan<T, N> {
             buf: [None; N],
             read_ptr: 0,
             write_ptr: 0,
+            has_no_unread_data: true,
         }
     }
 
@@ -19,28 +21,43 @@ impl<T: Copy, const N: usize> Rasengan<T, N> {
         (idx + 1) % self.buf.len()
     }
 
+    // if data at read_ptr was yet to be read, and write_ptr caught up
+    fn will_overwrite_unread_data(&self) -> bool {
+        self.has_overlapping_ptrs() && !self.has_no_unread_data
+    }
+
+    fn has_overlapping_ptrs(&self) -> bool {
+        self.read_ptr == self.write_ptr
+    }
+
     // Overwrites when buffer is full
     pub fn write(&mut self, data: T) {
-        let should_update_read_ptr =
-            self.write_ptr == self.read_ptr && self.buf[self.write_ptr].is_some();
+        if self.will_overwrite_unread_data() {
+            self.read_ptr = self.wrapping_increment(self.read_ptr);
+        }
 
         self.buf[self.write_ptr] = Some(data);
         self.write_ptr = self.wrapping_increment(self.write_ptr);
 
-        if should_update_read_ptr {
-            self.read_ptr = self.wrapping_increment(self.read_ptr);
-        }
+        self.has_no_unread_data = false;
     }
 
     pub fn read(&mut self) -> T {
+        if self.has_no_unread_data {
+            panic!("Buffer has no unread values left.");
+        }
+
         let data = self.buf[self.read_ptr];
+        self.read_ptr = self.wrapping_increment(self.read_ptr);
+
+        // read_ptr caught up to write_ptr
+        if self.has_overlapping_ptrs() {
+            self.has_no_unread_data = true;
+        }
 
         match data {
-            Some(val) => {
-                self.read_ptr = self.wrapping_increment(self.read_ptr);
-                val
-            }
-            None => panic!("Buffer is empty."),
+            Some(val) => val,
+            None => panic!("Reading None"),
         }
     }
 }
@@ -93,6 +110,32 @@ fn interleaved_write_reads() {
     assert_eq!(r1, 1);
     assert_eq!(r2, 2);
     assert_eq!(r3, 4);
+}
+
+#[test]
+#[should_panic]
+fn should_panic_on_read_after_full_read() {
+    let mut circ_buf = Rasengan::<u8, 3>::new();
+    circ_buf.write(1);
+    let r1 = circ_buf.read();
+    circ_buf.write(2);
+    circ_buf.write(3);
+    let r2 = circ_buf.read();
+    circ_buf.write(4);
+    circ_buf.write(5);
+    circ_buf.write(6); // read ptr gets moved to 4 as that's the oldest value left
+    let r3 = circ_buf.read();
+
+    let r4 = circ_buf.read();
+    let r5 = circ_buf.read();
+    let r6 = circ_buf.read();
+
+    assert_eq!(r1, 1);
+    assert_eq!(r2, 2);
+    assert_eq!(r3, 4);
+    assert_eq!(r4, 5);
+    assert_eq!(r5, 6);
+    assert_eq!(r6, 4);
 }
 
 #[test]
