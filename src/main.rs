@@ -1,0 +1,3 @@
+mod rasengan;
+
+fn main() {}
