@@ -1,12 +1,12 @@
 #[allow(dead_code)]
-struct Rasengan<T: Sized + Copy, const N: usize> {
+struct Rasengan<T: Copy, const N: usize> {
     buf: [Option<T>; N],
     read_ptr: usize,
     write_ptr: usize,
 }
 
 #[allow(dead_code)]
-impl<T: Sized + Copy, const N: usize> Rasengan<T, N> {
+impl<T: Copy, const N: usize> Rasengan<T, N> {
     fn new() -> Self {
         Self {
             buf: [None; N],
