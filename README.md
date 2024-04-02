@@ -4,6 +4,7 @@ Minimal circular buffer implementation.
 Allows overwriting data once the buffer is full. Only allows reading data once.
 
 ## Write with wrap-around
+In this approach `W` and `R` are incremented indefinitely (until overflow), capacity is enforced by `r = R % capacity` and `w = W % capacity`.
 ```
            W       R                                                                
            │       │                                                                
