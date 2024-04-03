@@ -78,30 +78,35 @@ In this case the reader resumes, so no unread values were overwritten.
 In this case the reader is still busy and the writer overwrites unread values. The read pointer is then moved to the least recent values in the buffer.
 
 ```
-                                                           ╷                        
-                             ├───────╴capacity - 1╶────────┤                        
-                         w  R,r                            W                        
-                         │   │                             │                        
-       ╔═══════╦═══════╦═▼═══▼═╦═══════╦───────┬───────┬───▼───┐                    
-       ║       ║       ║       ║       ║       │       │       │▐▌                  
-       ║   8   ║   7   ║  10   ║   4   ║       │       │       │▐▌                  
-       ╚═══▲═══╩═══════╩═══════╩═══╤═══╩───────┴───────┴───────┘▐▌                  
-        ▀▀▀│▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                   
-           └───────────────────────┘                                                
-                                                                                    
-       inc(W); write(7); inc(W); write(10);                                         
-       W - R = capacity - 1                                                         
-       // unread values at capacity, next write will overwrite unread values        
-       inc(R) // move to least recent value in the buffer                           
-                                                                                    
-                                                                                    
-                           w      R,r                      W                        
-                           │       │                       │                        
-       ╔═══════╦═══════╦═══▼═══╦═══▼═══╦───────┬───────┬───▼───┐                    
-       ║       ║       ║       ║       ║       │       │       │▐▌                  
-       ║   8   ║   7   ║  10   ║   4   ║       │       │       │▐▌                  
-       ╚═══▲═══╩═══════╩═══════╩═══╤═══╩───────┴───────┴───────┘▐▌                  
-        ▀▀▀│▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                   
-           └───────────────────────┘                                                
-       Final Configuration                                                          
+                                                                          
+                                                           ╷              
+                             ├───────╴capacity - 1╶────────┤              
+                         w  R,r                            W              
+                         │   │                             │              
+       ╔═══════╦═══════╦═▼═══▼═╦═══════╦───────┬───────┬───▼───┐          
+       ║       ║       ║       ║       ║       │       │       │▐▌        
+       ║   8   ║   7   ║  10   ║   4   ║       │       │       │▐▌        
+       ╚═══▲═══╩═══════╩═══════╩═══╤═══╩───────┴───────┴───────┘▐▌        
+        ▀▀▀│▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀         
+           └───────────────────────┘                                      
+                                                                          
+       inc(W); write(7); inc(W); write(10);                               
+       W - R = capacity - 1                                               
+       // unread values at capacity,                                      
+       // next write overwrites unread values                             
+       inc(R) // move to least recent value in the buffer                 
+                                                                          
+                                                                          
+                                                                          
+                                                                          
+                           w      R,r                      W              
+                           │       │                       │              
+       ╔═══════╦═══════╦═══▼═══╦═══▼═══╦───────┬───────┬───▼───┐          
+       ║       ║       ║       ║       ║       │       │       │▐▌        
+       ║   8   ║   7   ║  10   ║   4   ║       │       │       │▐▌        
+       ╚═══▲═══╩═══════╩═══════╩═══╤═══╩───────┴───────┴───────┘▐▌        
+        ▀▀▀│▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀         
+           └───────────────────────┘                                      
+                                                                          
+       FINAL CONFIGURATION                                                
 ```
