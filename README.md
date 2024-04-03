@@ -54,23 +54,24 @@ In this case the reader resumes, so no unread values were overwritten.
 
 ```
                                                                                     
-           w       r                       W       R                                
-           │       │                       │       │                                
-       ╔═══▼═══╦═══▼═══╦═══════╦═══════╦───▼───┬───▼───┐                            
-       ║       ║       ║       ║       ║       │       │▐▌                          
-       ║   8   ║   5   ║   2   ║   4   ║       │       │▐▌                          
-       ╚═══▲═══╩═══════╩═══════╩═══╤═══╩───────┴───────┘▐▌                          
-        ▀▀▀│▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                           
-           └───────────────────────┘                                                
-                                                                                    
-       read() -> 2; inc(R);                                                         
-       read() -> 4; inc(R);                                                         
-       read() -> 8; inc(R);                                                         
-       r = R % capacity // read with wrap-around                                    
-       w < R // buffer has no unread values                                         
-       read() -> panic("Nothing to read here.")                                     
-                                                                                    
+                                                                 
+           w       r                       W       R             
+           │       │                       │       │             
+       ╔═══▼═══╦═══▼═══╦═══════╦═══════╦───▼───┬───▼───┐         
+       ║       ║       ║       ║       ║       │       │▐▌       
+       ║   8   ║   5   ║   2   ║   4   ║       │       │▐▌       
+       ╚═══▲═══╩═══════╩═══════╩═══╤═══╩───────┴───────┘▐▌       
+        ▀▀▀│▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀        
+           └───────────────────────┘                             
+                                                                 
+       read() -> 2; inc(R);                                      
+       read() -> 4; inc(R);                                      
+       read() -> 8; inc(R);                                      
+       r = R % capacity // read with wrap-around                 
+       w < R // buffer has no unread values                      
+       read() -> panic("Nothing to read here.")                  
 
+                                                                 
 ```
 
 ### Write with overwrites
