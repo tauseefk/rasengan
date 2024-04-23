@@ -1,3 +1,0 @@
-mod rasengan;
-
-fn main() {}
