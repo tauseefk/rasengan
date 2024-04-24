@@ -32,7 +32,7 @@ impl<T: Copy, const N: usize> Rasengan<T, N> {
         self.buf[self.write_ptr % self.buf.len()] = Some(data);
     }
 
-    pub fn read(&mut self) -> T {
+    pub fn read(&mut self) -> Option<T> {
         // this relies on the fact that read will always lead write
         if self.write_ptr < self.read_ptr {
             panic!("No unread data available.");
@@ -41,9 +41,6 @@ impl<T: Copy, const N: usize> Rasengan<T, N> {
         let data = self.buf[self.read_ptr % self.buf.len()];
         self.read_ptr += 1;
 
-        match data {
-            Some(val) => val,
-            None => unimplemented!(),
-        }
+        data
     }
 }
