@@ -35,7 +35,7 @@ impl<T: Copy, const N: usize> Rasengan<T, N> {
     pub fn read(&mut self) -> Option<T> {
         // this relies on the fact that read will always lead write
         if self.write_ptr < self.read_ptr {
-            panic!("No unread data available.");
+            return None;
         }
 
         let data = self.buf[self.read_ptr % self.buf.len()];
