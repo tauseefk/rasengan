@@ -51,8 +51,7 @@ fn interleaved_write_reads() {
 }
 
 #[test]
-#[should_panic]
-fn panics_on_multiple_reads_of_same_data() {
+fn multiple_reads_of_same_data() {
     let mut circ_buf = Rasengan::<u8, 3>::new();
     circ_buf.write(1);
     let r1 = circ_buf.read();
@@ -73,14 +72,29 @@ fn panics_on_multiple_reads_of_same_data() {
     assert_eq!(r3, Some(4));
     assert_eq!(r4, Some(5));
     assert_eq!(r5, Some(6));
-    assert_eq!(r6, Some(4));
+    assert_eq!(r6, None);
 }
 
 #[test]
-#[should_panic]
-fn panics_when_reading_empty_buffer() {
+fn reading_empty_buffer() {
     let mut circ_buf = Rasengan::<u8, 1>::new();
     let r1 = circ_buf.read();
 
-    assert_eq!(r1, Some(2));
+    assert_eq!(r1, None);
+}
+
+#[test]
+fn write_unique() {
+    let mut circ_buf = Rasengan::<u8, 3>::new();
+
+    circ_buf.write_unique(1);
+    circ_buf.write_unique(2);
+    circ_buf.write_unique(2);
+    let r1 = circ_buf.read();
+    let r2 = circ_buf.read();
+    let r3 = circ_buf.read();
+
+    assert_eq!(r1, Some(1));
+    assert_eq!(r2, Some(2));
+    assert_eq!(r3, None);
 }
