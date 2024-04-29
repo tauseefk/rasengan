@@ -99,7 +99,7 @@ impl<T: Copy, const N: usize> Rasengan<T, N> {
     }
 }
 
-impl<T: Copy + Eq, const N: usize> Rasengan<T, N> {
+impl<T: Copy + PartialEq, const N: usize> Rasengan<T, N> {
     /// Writes to the buffer if the last element is not the same.
     /// Overwrites when buffer is full.
     ///
