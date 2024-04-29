@@ -119,12 +119,13 @@ impl<T: Copy + PartialEq, const N: usize> Rasengan<T, N> {
     /// assert_eq!(r3, None);
     /// ```
     pub fn write_unique(&mut self, data: T) {
-        let last_written = self.buf[self.write_ptr];
-
         if self.write_ptr == 0 {
             self.write(data);
             return;
         }
+
+        let idx = self.write_ptr % self.buf.len();
+        let last_written = self.buf[idx];
 
         if let Some(last_written) = last_written {
             if data != last_written {
