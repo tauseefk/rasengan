@@ -1,4 +1,4 @@
-pub struct Rasengan<T: Copy, const N: usize> {
+pub struct Rasengan<T, const N: usize> {
     buf: [Option<T>; N],
     read_ptr: usize,
     write_ptr: usize,
