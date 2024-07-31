@@ -4,7 +4,6 @@ pub struct Rasengan<T, const N: usize> {
     write_ptr: usize,
 }
 
-#[allow(dead_code)]
 impl<T: Copy, const N: usize> Rasengan<T, N> {
     pub fn new() -> Self {
         Self {
@@ -12,10 +11,6 @@ impl<T: Copy, const N: usize> Rasengan<T, N> {
             read_ptr: 1,
             write_ptr: 0,
         }
-    }
-
-    fn wrapping_increment(&self, idx: usize) -> usize {
-        (idx + 1) % self.buf.len()
     }
 
     fn will_overwrite_unread_data(&self) -> bool {

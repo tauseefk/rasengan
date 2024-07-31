@@ -1,3 +1,5 @@
+#![no_std]
+
 mod rasengan;
 
 pub mod prelude {
