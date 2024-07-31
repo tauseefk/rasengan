@@ -6,6 +6,10 @@ pub struct Rasengan<T, const N: usize> {
 
 impl<T: Copy, const N: usize> Rasengan<T, N> {
     pub fn new() -> Self {
+        Rasengan::new_const_default()
+    }
+
+    pub const fn new_const_default() -> Self {
         Self {
             buf: [None; N],
             read_ptr: 1,
