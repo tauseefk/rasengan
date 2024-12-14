@@ -2,6 +2,16 @@
 name = "rasengan"
 version = "0.2.3"
 edition = "2021"
+authors = ["Tauseef Khan", "Tauseef Khan <tauseef25@gmail.com>"]
+description = "Circular buffer with overwrite on overflow."
+repository = "https://github.com/tauseefk/rasengan"
+license = "MIT"
+keywords = ["gamedev", "circular-buffer"]
+
+include = [
+  "**/*.rs",
+  "Cargo.toml",
+]
 
 [dependencies]
 
